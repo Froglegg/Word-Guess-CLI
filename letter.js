@@ -1,29 +1,25 @@
 const Letter = function(char) {
     this.char = char;
-    this.guessed = false;
-
     this.checkGuess = function(charGuess) {
         if (charGuess == char) {
-
             return this.guessed = true;
         } else {
-            return this.guessed = false;
+            return this.guessed == false;
         }
     }
-
-    this.validateGuess = function() {
-        if (this.guessed = false) {
-            return this.char = "_"
-        } else {
+    this.showChar = function() {
+        if (this.guessed === true) {
             return this.char = char;
+        } else {
+            return this.char = "_";
         }
     }
-
 }
 
-var letter = new Letter("i");
+// let newLetter = new Letter("d");
 
-console.log(letter.checkGuess("h"));
+// console.log(newLetter.checkGuess("e"));
+// console.log(newLetter.showChar());
 
 module.exports = Letter;
 
