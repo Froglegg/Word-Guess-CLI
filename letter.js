@@ -19,7 +19,7 @@ const Letter = function(char) {
             return this.char;
         }
     }
-
 }
+
 
 module.exports = Letter;

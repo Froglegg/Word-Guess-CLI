@@ -1,3 +1,5 @@
+// first attempt, no constructors, no modularization 
+
 const inquirer = require('inquirer');
 const chalkPipe = require('chalk-pipe');
 

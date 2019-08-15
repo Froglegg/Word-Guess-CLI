@@ -6,100 +6,91 @@ function app() {
     // declaring some variables...
     let wordList = ["awesome", "great", "terrific", "wonderful", "outstanding", "marvelous"];
     let guessedList = [];
-    let answerArray = [];
-    var randomWord;
+    let count = 5;
 
-    // var wordDisplay;
-    // var guess;
-    // var charGuess;
-
-    // random word function... storing it as a function in a variable for some reason?
+    // random word function... storing it as a function so that it could potentially be called somewhere else
     var randomWord = function() {
-            return randomWord = wordList[Math.floor(Math.random() * wordList.length)];
-        }
-        // calling random word function 
+        return randomWord = wordList[Math.floor(Math.random() * wordList.length)];
+    }
+
+    // calling random word function 
     randomWord();
-    var randomWordArray = randomWord.split("");
+
+    // splitting the randomword into an array, and then joining it again into a format that could be compared to the Word Display array that the word.showWord() function produces
+    var randomWordArray = randomWord.split("").join(" ");
+
     // storing the random word as a parameter of the Word constructor
     let word = new Word(randomWord);
 
     // Creating a new word + the array of letter objects
     word.makeWord();
 
-    // creating a constant function for showing the word, which will be called over and over again
-
-
     function guesser() {
-        var showWord = word.showWord();
 
-        // make sure the guess hasn 't been made already, if so, create new random word, restarts app 
-        if (!showWord.includes("_")) {
-            console.log(chalkPipe('green.bold')(`Correct! You guessed it!`));
+        // makes sure the guess hasn't been made already, or if the user runs out of attempts. If so, restarts app
+        if (count < 1) {
+            console.log(chalkPipe('red.bold')('you lose!'));
+            app();
+        } else if (word.showWord() == randomWordArray) {
+            console.log(chalkPipe(`green.bold`)(`you win!`));
             app();
         } else {
             inquirer.prompt([{
-                type: "input",
-                name: "input",
-                message: "Guess a Letter!",
-                validate: function(value) {
-                    var pass = value.match(
-                        /^[a-zA-Z]$/
-                    );
-                    if (pass) {
-                        return true;
+                    type: "input",
+                    name: "input",
+                    message: "Guess a Letter!",
+                    validate: function(value) {
+                        var pass = value.match(
+                            /^[a-zA-Z]$/
+                        );
+                        if (pass) {
+                            return true;
+                        }
+                        return chalkPipe('red.bold')('Please enter a single letter');
                     }
+                }]).then(answer => {
+                        var charGuess = answer.input;
 
-                    return chalkPipe('red.bold')('Please enter a single letter');
+                        //running the checkWord function to update the "guessed" boolean for the letter being guessed
+                        word.checkWord(charGuess);
+
+                        //checking to make sure the user didn't already guess this letter; not necessary, but a helpful feature
+                        if (guessedList.includes(charGuess)) {
+                            console.log(chalkPipe('blue.bold')(`\nYou already guessed ${charGuess}`));
+                        } else {
+                            guessedList.push(charGuess);
+                            // if the random word includes the character guessed
+                            if (randomWord.includes(charGuess)) {
+                                console.log(chalkPipe('green.bold')('\nCorrect!'));
+
+                                //console log what is returned from the showWord function
+                                console.log(word.showWord());
+
+                            } else {
+                                console.log(chalkPipe('red.bold')('\nWrong!'));
+                                console.log(`\nLetters guessed: ${guessedList}`);
+
+                                // decrease the count
+                                count--;
+                                console.log(`Attempts remaining: ${chalkPipe(`red.bold`)(+count)}`);
+                        //console log what is returned from the showWord function
+                        console.log(word.showWord());
+
+                    }
                 }
+                console.log("\n");
 
-            }]).then(answer => {
-                var charGuess = answer.input;
-                word.checkWord(charGuess);
-                console.log(word);
-                console.log("else ran");
-                var wordArray = word.letters;
-                wordArray.forEach(element => {
-                    console.log(element.char);
-                });
-
-                // if (guessedList.includes(charGuess)) {
-                //     console.log(chalkPipe('blue.bold')(`You already guessed ${charGuess}`));
-                // } else {
-                //     guessedList.push(charGuess);
-                //     console.log(`Letters guessed: ${guessedList}`);
-
-                //     if (randomWordArray.includes(charGuess)) {
-                //         console.log(chalkPipe('green.bold')('Correct!'));
-                //         for (var i = 0; i < word.letters.length; i++) {
-                //             if (word.letters[i] === charGuess) {
-                //                 answerArray[i] = charGuess;
-                //             }
-                //         }
-                //     } else {
-                //         console.log(chalkPipe('red.bold')('Wrong!'));
-                //     }
-                // }
-
-                console.log(`${answerArray.join(" ")}`);
-
+                // recursion, re-initiate inquirer
                 guesser();
 
             });
         }
 
+
     }
-    // starts the inquirer prompt, unless word has been guessed, then it will restart the app
+
+    // guesser starts the inquirer prompt, unless word has been guessed, then it will restart the app
     guesser();
 }
-// starts the application
+// launches appplication
 app();
-
-
-
-
-
-// The file containing the logic for the course of the game, which depends on `Word.js` and:
-
-//   * Randomly selects a word and uses the `Word` constructor to store it
-
-//   * Prompts the user for each guess and keeps track of the user's remaining guesses

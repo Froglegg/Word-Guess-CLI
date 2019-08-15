@@ -1,52 +1,63 @@
 const Guesser = function() {
 
-    if(answerArray.join("") == randomWord.join("")){
-        console.log(chalkPipe('green.bold')(`Correct! You guessed it!`));
-        app();
-    }
-    else{
-    inquirer.prompt([{
-        type: "input",
-        name: "input",
-        message: "Guess a Letter!",
-        validate: function(value) {
-            var pass = value.match(
-                /^[a-zA-Z]$/
-            );
-            if (pass) {
-                return true;
-            }
+        // makes sure the guess hasn't been made already, or if the user runs out of attempts. If so, restarts app
+        if (count < 1) {
+            console.log(chalkPipe('red.bold')('you lose!'));
+            app();
+        } else if (word.showWord() == randomWordArray) {
+            console.log(chalkPipe(`green.bold`)(`you win!`));
+            app();
+        } else {
+            inquirer.prompt([{
+                    type: "input",
+                    name: "input",
+                    message: "Guess a Letter!",
+                    validate: function(value) {
+                        var pass = value.match(
+                            /^[a-zA-Z]$/
+                        );
+                        if (pass) {
+                            return true;
+                        }
+                        return chalkPipe('red.bold')('Please enter a single letter');
+                    }
+                }]).then(answer => {
+                        var charGuess = answer.input;
 
-            return chalkPipe('red.bold')('Please enter a single letter');
-        }
-    }]).then(answer => {
-        if (guessedList.includes(answer.input)){
-            console.log(chalkPipe('blue.bold')(`You already guessed ${answer.input}`));
-        }
-        else {
-            guessedList.push(answer.input);
-            console.log(`Guess: ${answer.input}`);
-            console.log(`Letters guessed: ${guessedList}`);   
-            if (randomWord.includes(answer.input)) {
-                console.log(chalkPipe('green.bold')('Correct!'));
-                for (var i = 0; i < randomWord.length; i++) {
-                    if (randomWord[i] === answer.input) {
-                        answerArray[i] = answer.input;
+                        //running the checkWord function to update the "guessed" boolean for the letter being guessed
+                        word.checkWord(charGuess);
+
+                        //checking to make sure the user didn't already guess this letter; not necessary, but a helpful feature
+                        if (guessedList.includes(charGuess)) {
+                            console.log(chalkPipe('blue.bold')(`\nYou already guessed ${charGuess}`));
+                        } else {
+                            guessedList.push(charGuess);
+                            // if the random word includes the character guessed
+                            if (randomWord.includes(charGuess)) {
+                                console.log(chalkPipe('green.bold')('\nCorrect!'));
+
+                                //console log what is returned from the showWord function
+                                console.log(word.showWord());
+
+                            } else {
+                                console.log(chalkPipe('red.bold')('\nWrong!'));
+                                console.log(`\nLetters guessed: ${guessedList}`);
+
+                                // decrease the count
+                                count--;
+                                console.log(`Attempts remaining: ${chalkPipe(`red.bold`)(+count)}`);
+                        //console log what is returned from the showWord function
+                        console.log(word.showWord());
+
                     }
                 }
-            } else 
-            {
-                console.log(chalkPipe('red.bold')('Wrong!'));
-            } 
+                console.log("\n");
+
+                // recursion, re-initiate inquirer
+                guesser();
+
+            });
         }
-
-        // console.log(randomWord, guessedList, randomWord.some(v => guessedList.includes(v)));
-
-        console.log(`${answerArray.join(" ")}`);
-
-        guesser();
-    });
-}
 
 }
 
