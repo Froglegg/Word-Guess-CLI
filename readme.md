@@ -3,7 +3,7 @@
 
 A hangman-style CLI built in node. Run with `node index.js`. Requires Node, Inquirer, and ChalkPipe
 
-![](wordguesscli.gif)
+![](wordguessgif2.gif)
 
 ##Set-up
 
