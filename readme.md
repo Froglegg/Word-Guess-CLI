@@ -3,6 +3,8 @@
 
 A hangman-style CLI built in node. Run with `node index.js`. Requires Node, Inquirer, and ChalkPipe
 
+![](wordguesscli.gif)
+
 ##Set-up
 
 1. Install Node dependencies: run `npm install` to install dependencies in `package.json`  
